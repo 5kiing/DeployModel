@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Prediction</title>
+  </head>
+
+  <body>
+    <div>
+      <h1>Prediction</h1>
+      <form action="{{url_for('predict')}}" method="post">
+        <input
+          type="text"
+          name="headdirection"
+          placeholder="Head Direction"
+          required="required"
+        />
+        <input
+          type="text"
+          name="northsouth"
+          placeholder="North South"
+          required="required"
+        />
+        <input
+          type="text"
+          name="eastwest"
+          placeholder="East West"
+          required="required"
+        />
+        <input
+          type="text"
+          name="facebundles"
+          placeholder="Face Bundles"
+          required="required"
+        />
+        <input
+          type="text"
+          name="goods"
+          placeholder="Goods"
+          required="required"
+        />
+        <input
+          type="text"
+          name="haircolor"
+          placeholder="Hair Color"
+          required="required"
+        />
+        <input
+          type="text"
+          name="samplescollected"
+          placeholder="Samples Collected"
+          required="required"
+        />
+        <input
+          type="text"
+          name="ageatdeath"
+          placeholder="Age at Death"
+          required="required"
+        />
+        <button type="submit" class="btn btn-primary btn-block btn-large">
+          Predict
+        </button>
+      </form>
+
+      <br />
+      <br />
+      {{output}}
+    </div>
+  </body>
+</html>
