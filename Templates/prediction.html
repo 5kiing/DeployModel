@@ -1,3 +1,4 @@
+{% comment %}
 <html>
   <head>
     <title>Prediction</title>
@@ -16,14 +17,8 @@
 
         <input
           type="text"
-          name="northsouth"
-          placeholder="North South"
-          required="required"
-        />
-        <input
-          type="text"
-          name="eastwest"
-          placeholder="East West"
+          name="depth"
+          placeholder="Depth"
           required="required"
         />
         <input
@@ -52,6 +47,12 @@
         />
         <input
           type="text"
+          name="length"
+          placeholder="Length"
+          required="required"
+        />
+        <input
+          type="text"
           name="ageatdeath"
           placeholder="Age at Death"
           required="required"
@@ -67,3 +68,13 @@
     </div>
   </body>
 </html>
+{% endcomment %} {% extends "base.html" %} {% block content %}
+
+<h1>Predictions:</h1>
+<ul>
+  {% for prediction in response.prediction %}
+  <li>{{ prediction }}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
