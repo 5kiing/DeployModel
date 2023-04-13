@@ -1,80 +1,61 @@
-{% comment %}
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Prediction</title>
+    <title>XGBoost Prediction</title>
   </head>
-
   <body>
-    <div>
-      <h1>Prediction</h1>
-      <form action="{{url_for('predict')}}" method="post">
-        <input
-          type="text"
-          name="headdirection"
-          placeholder="Head Direction"
-          required="required"
-        />
+    <h1>XGBoost Prediction</h1>
+    <form id="prediction-form">
+      <label for="headdirection">Head Direction:</label>
+      <input type="text" id="headdirection" name="headdirection" /><br /><br />
+      <label for="depth">Depth:</label>
+      <input type="floatformat" id="depth" name="depth" /><br /><br />
+      <label for="facebundles">Face Bundles:</label>
+      <input type="text" id="facebundles" name="facebundles" /><br /><br />
+      <label for="goods">Goods:</label>
+      <input type="text" id="goods" name="goods" /><br /><br />
+      <label for="wrapping">Wrapping:</label>
+      <input type="text" id="wrapping" name="wrapping" /><br /><br />
+      <label for="haircolor">Hair Color:</label>
+      <input type="text" id="haircolor" name="haircolor" /><br /><br />
+      <label for="samplescollected">Samples Collected:</label>
+      <input
+        type="text"
+        id="samplescollected"
+        name="samplescollected"
+      /><br /><br />
+      <label for="length">Length:</label>
+      <input type="floatformat" id="length" name="length" /><br /><br />
+      <label for="ageatdeath">Age at Death:</label>
+      <input type="text" id="ageatdeath" name="ageatdeath" /><br /><br />
+      <input type="submit" value="Predict" />
+    </form>
 
-        <input
-          type="text"
-          name="depth"
-          placeholder="Depth"
-          required="required"
-        />
-        <input
-          type="text"
-          name="facebundles"
-          placeholder="Face Bundles"
-          required="required"
-        />
-        <input
-          type="text"
-          name="goods"
-          placeholder="Goods"
-          required="required"
-        />
-        <input
-          type="text"
-          name="haircolor"
-          placeholder="Hair Color"
-          required="required"
-        />
-        <input
-          type="text"
-          name="samplescollected"
-          placeholder="Samples Collected"
-          required="required"
-        />
-        <input
-          type="text"
-          name="length"
-          placeholder="Length"
-          required="required"
-        />
-        <input
-          type="text"
-          name="ageatdeath"
-          placeholder="Age at Death"
-          required="required"
-        />
-        <button type="submit" class="btn btn-primary btn-block btn-large">
-          Predict
-        </button>
-      </form>
+    <div id="prediction-result"></div>
 
-      <br />
-      <br />
-      {{output}}
-    </div>
+    <script>
+      const form = document.querySelector("#prediction-form");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = {};
+        for (const [key, value] of formData.entries()) {
+          data[key] = value;
+        }
+        fetch("/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            const predictionResult =
+              document.querySelector("#prediction-result");
+            predictionResult.innerHTML = `Predicted value: ${result.predictions[0]}`;
+          });
+      });
+    </script>
   </body>
 </html>
-{% endcomment %} {% extends "base.html" %} {% block content %}
-
-<h1>Predictions:</h1>
-<ul>
-  {% for prediction in response.prediction %}
-  <li>{{ prediction }}</li>
-  {% endfor %}
-</ul>
-
-{% endblock %}

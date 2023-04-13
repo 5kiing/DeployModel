@@ -1,8 +1,8 @@
-# from flask import Flask, request, render_template
-# import pickle
-# import numpy as np
-# import xgboost as xgb
-# import pandas as pd
+from flask import Flask, request, render_template
+import pickle
+import numpy as np
+import xgboost as xgb
+import pandas as pd
 
 # app = Flask(__name__)
 # model = pickle.load(open('filteredwrappingXGB_XV.pkl', 'rb'))
@@ -33,6 +33,8 @@
 # if __name__ == '__main__':
 #     app.run(debug=True, host="0.0.0.0", port=8000)
 
+# THIS WORKS!! WITH MODEL.PKL! ------------------------------------------------------------------------------
+
 # app = Flask(__name__)
 # model = pickle.load(open('model.pkl', 'rb'))
 
@@ -62,6 +64,8 @@
 # if __name__ == '__main__':
 #     app.run(debug=True)
 #     app.run(debug=True, host="54.87.188.151", port=8000)
+
+# END ----------------------------------------------------------------------------------------
 
 # from flask import Flask, request, jsonify
 # import pandas as pd
@@ -115,57 +119,57 @@
 
 # MOST PROGRESS SO FAR -------------------------------------------------
 
-from flask import Flask, request, render_template
-import pickle
-import numpy as np
-from sklearn.calibration import LabelEncoder
-import xgboost as xgb
-import pandas as pd
+# from flask import Flask, request, render_template
+# import pickle
+# import numpy as np
+# from sklearn.calibration import LabelEncoder
+# import xgboost as xgb
+# import pandas as pd
 
-# Load the XGBoost model
-model_path = "filteredwrappingXGB_XV.pkl"
-with open(model_path, "rb") as f:
-    model = pickle.load(f)
+# # Load the XGBoost model
+# model_path = "filteredwrappingXGB_XV.pkl"
+# with open(model_path, "rb") as f:
+#     model = pickle.load(f)
 
-# Create a Flask app
-app = Flask(__name__)
+# # Create a Flask app
+# app = Flask(__name__)
 
-# Define a function to preprocess the data and make predictions
-
-
-def predict_wrapping(data):
-    # Convert categorical variables to numeric values
-    cat_cols = [0, 2, 3, 4, 5, 7]  # column indices for categorical variables
-    for col in cat_cols:
-        encoder = LabelEncoder()
-        data[:, col] = encoder.fit_transform(data[:, col])
-    # Convert the data to a DMatrix object
-    dmatrix = xgb.DMatrix(data)
-    # Make predictions using the XGBoost model
-    predictions = model.predict(dmatrix)
-    # Convert numeric predictions to string labels
-    label_mapping = {0: "B", 1: "H", 2: "W"}
-    predicted_labels = [label_mapping[int(pred)] for pred in predictions]
-    return predicted_labels
-
-# Define a Flask route for handling API requests
+# # Define a function to preprocess the data and make predictions
 
 
-@app.route("/", methods=["GET"])
-def predict_api():
-    input = [float(x) for x in request.form.values()]
-    final_input = np.array(input).reshape(1, -1)
-    prediction = model.predict(xgb.DMatrix(final_input))
-    # Convert numeric predictions to string labels
-    label_mapping = {0: "B", 1: "H", 2: "W"}
-    predicted_label = label_mapping[int(prediction[0])]
-    # Render the prediction in the prediction.html template
-    return render_template('prediction.html', predicted_label=predicted_label)
+# def predict_wrapping(data):
+#     # Convert categorical variables to numeric values
+#     cat_cols = [0, 2, 3, 4, 5, 7]  # column indices for categorical variables
+#     for col in cat_cols:
+#         encoder = LabelEncoder()
+#         data[:, col] = encoder.fit_transform(data[:, col])
+#     # Convert the data to a DMatrix object
+#     dmatrix = xgb.DMatrix(data)
+#     # Make predictions using the XGBoost model
+#     predictions = model.predict(dmatrix)
+#     # Convert numeric predictions to string labels
+#     label_mapping = {0: "B", 1: "H", 2: "W"}
+#     predicted_labels = [label_mapping[int(pred)] for pred in predictions]
+#     return predicted_labels
+
+# # Define a Flask route for handling API requests
 
 
-# Run the Flask app
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8080)
+# @app.route("/", methods=["GET"])
+# def predict_api():
+#     input = [float(x) for x in request.form.values()]
+#     final_input = np.array(input).reshape(1, -1)
+#     prediction = model.predict(xgb.DMatrix(final_input))
+#     # Convert numeric predictions to string labels
+#     label_mapping = {0: "B", 1: "H", 2: "W"}
+#     predicted_label = label_mapping[int(prediction[0])]
+#     # Render the prediction in the prediction.html template
+#     return render_template('prediction.html', predicted_label=predicted_label)
+
+
+# # Run the Flask app
+# if __name__ == "__main__":
+#     app.run(debug=True, host="0.0.0.0", port=8080)
 
 # END MOST PROGRESS SO FAR -----------------------------------------------------------
 
@@ -208,3 +212,126 @@ if __name__ == "__main__":
 
 # if __name__ == "__main__":
 #     app.run(debug=True)
+
+# END -----------------------------------------------------------------------------
+
+# import pickle
+# import numpy as np
+# import pandas as pd
+# from flask import Flask, jsonify, request
+# import xgboost as xgb
+# from sklearn.model_selection import train_test_split
+# # Load the XGBoost model from the pickle file
+# model_file = "MF_XGB_XV2.pkl"
+# with open(model_file, "rb") as f:
+#     model = pickle.load(f)
+# # Define a Flask app instance
+# app = Flask(__name__)
+# # Define a route for the API
+
+
+# @app.route('/')
+# def home():
+#     return render_template('prediction.html')
+
+
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     # Get the input data as a JSON object
+#     data = request.get_json()
+
+#     # Convert the input data into a pandas DataFrame
+#     df = pd.DataFrame.from_dict(data)
+
+#     # Convert "depth" and "length" columns to floats
+#     df["depth"] = df["depth"].astype(float)
+#     df["length"] = df["length"].astype(float)
+
+#     # Convert categorical variables to category data type
+#     cat_cols = ["headdirection", "facebundles", "goods",
+#                 'wrapping', 'haircolor', 'samplescollected', 'ageatdeath']
+#     for col in cat_cols:
+#         df[col] = df[col].astype("category")
+
+#     # Make predictions using the XGBoost model
+#     dtest = xgb.DMatrix(df, enable_categorical=True)
+#     y_pred = model.predict(dtest)
+
+#     # Return the predictions as a JSON object
+#     return jsonify(predictions=y_pred.tolist())
+
+
+# # Run the Flask app
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+
+import pickle
+import numpy as np
+import pandas as pd
+from flask import Flask, jsonify, request, render_template
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+
+# Load the XGBoost model from the pickle file
+model_file = "MF_XGB_XV2.pkl"
+with open(model_file, "rb") as f:
+    model = pickle.load(f)
+
+# Define a Flask app instance
+app = Flask(__name__)
+
+# Define a route for the API
+
+
+@app.route('/')
+def home():
+    return render_template('prediction.html')
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Get the input data as a JSON object
+    data = request.get_json()
+
+    # Check if the Content-Type header is set to "application/json"
+    content_type = request.headers.get('Content-Type')
+    if content_type != 'application/json':
+        return jsonify({'error': 'Invalid Content-Type header'}), 400
+
+    # Convert the input data into a pandas DataFrame
+    df = pd.DataFrame.from_dict(data, orient='index').T
+
+    # Convert "depth" and "length" columns to floats
+    df["depth"] = df["depth"].astype(float)
+    df["length"] = df["length"].astype(float)
+
+    # Convert categorical variables to category data type
+    cat_cols = ["headdirection", "depth", "facebundles",
+                'goods', 'wrapping', 'haircolor', 'samplescollected', 'length', 'ageatdeath']
+    for col in cat_cols:
+        df[col] = df[col].astype("category")
+
+    # Reorder the columns in the DataFrame to match the order of the features in the XGBoost model
+    df = df[["headdirection", "depth", "facebundles",
+             'goods', 'wrapping', 'haircolor', 'samplescollected', 'length', 'ageatdeath']]
+
+    # Make predictions using the XGBoost model
+    dtest = xgb.DMatrix(df, enable_categorical=True)
+    y_pred = model.predict(dtest)
+
+    # Convert the output from 1/0 to "male"/"female"
+    result = []
+    for p in y_pred:
+        if p == 1:
+            result.append("male")
+        else:
+            result.append("female")
+
+    # Return the result as a JSON object
+    return jsonify(predictions=result)
+
+
+# Run the Flask app
+if __name__ == '__main__':
+    app.run(debug=True)
